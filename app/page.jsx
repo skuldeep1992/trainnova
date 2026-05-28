@@ -1,7 +1,5 @@
-
-// comment
-
 "use client";
+
 import { useState } from "react";
 import * as XLSX from "xlsx";
 
@@ -103,7 +101,57 @@ export default function Page() {
     reader.readAsArrayBuffer(file);
   };
 
-  const tutorials = [];
+  const tutorials = [
+    {
+      title: "GAM Basics Training",
+      type: "YouTube Tutorial",
+      link: "https://www.youtube.com/",
+    },
+    {
+      title: "OpenWrap SOP Guide",
+      type: "Internal Documentation",
+      link: "https://www.loom.com/",
+    },
+  ];
+
+  const [scheduledSessions, setScheduledSessions] = useState([]);
+
+  const [schedulerForm, setSchedulerForm] = useState({
+    title: "",
+    trainer: "",
+    attendees: "",
+    date: "",
+    time: "",
+    zoomLink: "",
+  });
+
+  const scheduleSession = () => {
+    if (
+      !schedulerForm.title ||
+      !schedulerForm.trainer ||
+      !schedulerForm.date ||
+      !schedulerForm.time
+    ) {
+      return;
+    }
+
+    setScheduledSessions([
+      {
+        ...schedulerForm,
+        id: Date.now(),
+      },
+      ...scheduledSessions,
+    ]);
+
+    setSchedulerForm({
+      title: "",
+      trainer: "",
+      attendees: "",
+      date: "",
+      time: "",
+      zoomLink: "",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 to-blue-50 p-6">
@@ -191,6 +239,182 @@ export default function Page() {
               <span className="text-red-500 text-sm font-medium">
                 Action Needed
               </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl shadow-xl p-6 border border-slate-100">
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <div>
+              <h2 className="text-3xl font-bold text-slate-800">
+                Session Scheduler
+              </h2>
+              <p className="text-slate-500 mt-1">
+                Schedule onboarding and training sessions with Zoom links and Outlook email support
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <input
+                type="text"
+                placeholder="Session Title"
+                value={schedulerForm.title}
+                onChange={(e) =>
+                  setSchedulerForm({
+                    ...schedulerForm,
+                    title: e.target.value,
+                  })
+                }
+                className="w-full border border-slate-200 rounded-2xl px-4 py-3"
+              />
+
+              <input
+                type="text"
+                placeholder="Trainer Name"
+                value={schedulerForm.trainer}
+                onChange={(e) =>
+                  setSchedulerForm({
+                    ...schedulerForm,
+                    trainer: e.target.value,
+                  })
+                }
+                className="w-full border border-slate-200 rounded-2xl px-4 py-3"
+              />
+
+              <input
+                type="text"
+                placeholder="Attendees Emails"
+                value={schedulerForm.attendees}
+                onChange={(e) =>
+                  setSchedulerForm({
+                    ...schedulerForm,
+                    attendees: e.target.value,
+                  })
+                }
+                className="w-full border border-slate-200 rounded-2xl px-4 py-3"
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input
+                  type="date"
+                  value={schedulerForm.date}
+                  onChange={(e) =>
+                    setSchedulerForm({
+                      ...schedulerForm,
+                      date: e.target.value,
+                    })
+                  }
+                  className="w-full border border-slate-200 rounded-2xl px-4 py-3"
+                />
+
+                <input
+                  type="time"
+                  value={schedulerForm.time}
+                  onChange={(e) =>
+                    setSchedulerForm({
+                      ...schedulerForm,
+                      time: e.target.value,
+                    })
+                  }
+                  className="w-full border border-slate-200 rounded-2xl px-4 py-3"
+                />
+              </div>
+
+              <input
+                type="text"
+                placeholder="Zoom Meeting Link"
+                value={schedulerForm.zoomLink}
+                onChange={(e) =>
+                  setSchedulerForm({
+                    ...schedulerForm,
+                    zoomLink: e.target.value,
+                  })
+                }
+                className="w-full border border-slate-200 rounded-2xl px-4 py-3"
+              />
+
+              <button
+                onClick={scheduleSession}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-2xl font-semibold transition"
+              >
+                Schedule Session
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {scheduledSessions.length === 0 ? (
+                <div className="border border-dashed border-slate-300 rounded-3xl p-8 text-center text-slate-500">
+                  No sessions scheduled yet
+                </div>
+              ) : (
+                scheduledSessions.map((session) => (
+                  <div
+                    key={session.id}
+                    className="border border-slate-200 rounded-3xl p-5"
+                  >
+                    <div className="flex items-start justify-between gap-4 flex-wrap">
+                      <div>
+                        <h3 className="text-xl font-bold text-slate-800">
+                          {session.title}
+                        </h3>
+                        <p className="text-slate-500 mt-1">
+                          Trainer: {session.trainer}
+                        </p>
+                      </div>
+
+                      <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium">
+                        Scheduled
+                      </span>
+                    </div>
+
+                    <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-slate-500">Date</p>
+                        <p className="font-medium text-slate-700 mt-1">
+                          {session.date}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-slate-500">Time</p>
+                        <p className="font-medium text-slate-700 mt-1">
+                          {session.time}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 flex flex-wrap gap-3">
+                      {session.zoomLink && (
+                        <a
+                          href={session.zoomLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition"
+                        >
+                          Join Zoom
+                        </a>
+                      )}
+
+                      <a
+                        href={`mailto:${session.attendees}?subject=${encodeURIComponent(
+                          session.title
+                        )}&body=${encodeURIComponent(
+                          `Training Session: ${session.title}
+Trainer: ${session.trainer}
+Date: ${session.date}
+Time: ${session.time}
+Zoom Link: ${session.zoomLink}`
+                        )}`}
+                        className="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-medium transition"
+                      >
+                        Send Outlook Invite
+                      </a>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

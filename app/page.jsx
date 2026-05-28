@@ -1,9 +1,12 @@
+
+// comment
+
 "use client";
 import { useState } from "react";
 import * as XLSX from "xlsx";
 
 export default function Page() {
-  const [trainees, setTrainees] = useState<any[]>([]); 
+  const [trainees, setTrainees] = useState([]); 
 
   const [newEmployee, setNewEmployee] = useState({
     name: "",
@@ -32,13 +35,13 @@ export default function Page() {
     });
   };
 
-  const removeEmployee = (employeeName: string) => {
+  const removeEmployee = (employeeName) => {
     setTrainees(
       trainees.filter((trainee) => trainee.name !== employeeName)
     );
   };
 
-  const [sessions, setSessions] = useState<any[]>([]);
+  const [sessions, setSessions] = useState([]);
 
   const completedSessions = sessions.filter(
     (session) =>
@@ -55,7 +58,7 @@ export default function Page() {
         .toLowerCase() !== "done"
   );
 
-  const handleSheetUpload = (event: any) => {
+  const handleSheetUpload = (event) => {
     const file = event.target.files[0];
 
     if (!file) return;

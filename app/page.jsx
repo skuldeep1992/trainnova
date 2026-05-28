@@ -40,21 +40,45 @@ export default function Page() {
   };
 
   const [sessions, setSessions] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("all");
+
+ 
 
   const completedSessions = sessions.filter(
-    (session) =>
+  (session) =>
+    String(session.status || "")
+      .trim()
+      .toLowerCase() === "done"
+);
+
+const upcomingSessions = sessions.filter(
+  (session) =>
+    session.emeaAvailability &&
+    String(session.status || "")
+      .trim()
+      .toLowerCase() !== "done"
+);
+
+const filteredSessions = sessions.filter((session) => {
+  if (statusFilter === "completed") {
+    return (
       String(session.status || "")
         .trim()
         .toLowerCase() === "done"
-  );
+    );
+  }
 
-  const upcomingSessions = sessions.filter(
-    (session) =>
+  if (statusFilter === "upcoming") {
+    return (
       session.emeaAvailability &&
       String(session.status || "")
         .trim()
         .toLowerCase() !== "done"
-  );
+    );
+  }
+
+  return true;
+});
 
   const handleSheetUpload = (event) => {
     const file = event.target.files[0];
@@ -431,9 +455,21 @@ Zoom Link: ${session.zoomLink}`
                 </p>
               </div>
 
-              <div className="text-sm text-slate-500 bg-slate-100 px-4 py-2 rounded-2xl">
-                Excel Connected
-              </div>
+              <div className="flex items-center gap-3 flex-wrap">
+  <div className="text-sm text-slate-500 bg-slate-100 px-4 py-2 rounded-2xl">
+    Excel Connected
+  </div>
+
+  <select
+    value={statusFilter}
+    onChange={(e) => setStatusFilter(e.target.value)}
+    className="border border-slate-200 rounded-2xl px-4 py-2 text-sm"
+  >
+    <option value="all">All Sessions</option>
+    <option value="completed">Completed</option>
+    <option value="upcoming">Upcoming</option>
+  </select>
+</div>
             </div>
 
             <div className="overflow-auto rounded-2xl border border-slate-200">
@@ -448,7 +484,7 @@ Zoom Link: ${session.zoomLink}`
                 </thead>
 
                 <tbody>
-                  {sessions.map((session, index) => (
+                  {filteredSessions.map((session, index) => (
                     <tr
                       key={index}
                       className="border-t border-slate-100 hover:bg-slate-50"

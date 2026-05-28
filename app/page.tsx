@@ -2,7 +2,7 @@
 import { useState } from "react";
 import * as XLSX from "xlsx";
 
-export default function TrainingManagementPortal() {
+export default function Page() {
   const [trainees, setTrainees] = useState<any[]>([]); 
 
   const [newEmployee, setNewEmployee] = useState({
